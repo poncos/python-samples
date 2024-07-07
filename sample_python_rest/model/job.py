@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 
-JobStatus = Enum('Status', ['PENDING', 'PROCESSING', 'SUCCESSFUL', 'FAILED'])
+# JobStatus = Enum('Status', ['PENDING', 'PROCESSING', 'SUCCESSFUL', 'FAILED'])
+PENDING = 'PENDING'
+PROCESSING = 'PROCESSING'
+SUCCESSFUL = 'SUCCESSFUL'
+FAILED = 'FAILED'
 
 
 @dataclass(frozen=True)
@@ -10,7 +14,7 @@ class Job:
     group_id: int
     type: str
     description: str
-    status: JobStatus
+    status: str
     error_msg: str
     created_at: str
     started_at: str
@@ -19,12 +23,12 @@ class Job:
     def is_job_pending(self):
         return (
                 self.status is None or
-                self.status == JobStatus.PENDING or
-                self.status == JobStatus.PROCESSING
+                self.status == PENDING or
+                self.status == PROCESSING
         )
 
     def is_job_successful(self):
-        return self.status == JobStatus.SUCCESSFUL
+        return self.status == SUCCESSFUL
 
     def is_job_failed(self):
-        return self.status == JobStatus.FAILED
+        return self.status == FAILED

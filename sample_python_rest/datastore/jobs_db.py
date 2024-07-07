@@ -5,39 +5,77 @@ import sqlite3
 
 from typing import List
 
+
 class JobsDb:
 
     def __init__(self, app_config: config.ApplicationConfig):
         self.__db_config = app_config.datastore("sqllite")
 
         self.__create_job_stm = """insert into jobs
-        (job_group_id, job_type, status, description)
+        (group_id, type, status, description)
         values
-        (%(groupid)s, %(job_type)s, 'created', %(description)s)
-        RETURNING job_id,job_group_id,job_type,description,status,created_at)
+        ('%s', '%s', 'PENDING', '%s') 
         """
+        #RETURNING id,group_id,type,description,status,created_at,started_at,finished_at)
 
         self.__list_jobs_stm = """
-        select job_id, job_group_id, job_type, description, status, created_at, started_at, finished_at
+        select job_id, group_id, type, description, status, error_msg, created_at, started_at, finished_at
         from jobs
         """
+
+        self.__select_job_stm = """
+            select job_id,group_id,type,description,status,created_at,started_at,finished_at
+            from jobs where job_id=%d
+        """
+
+        self.__db_con = None
 
     def create_job(self, group_id, description, job_type) -> Job:
         connection = self.__get_db_connection()
 
         cursor = connection.cursor()
-        cursor.execute(self.__create_job_stm, {"groupid": group_id, "description": description, "job_type": job_type})
+        statement = self.__create_job_stm % (group_id, job_type, description)
+        print(f"Running statement {statement}")
+        cursor.execute(statement)
         connection.commit()
 
-        record = cursor.fetchone()
+        # Retrieve the ID of the inserted row
+        last_row_id = cursor.lastrowid
+        print(f"Record created: {last_row_id}")
+        record = self.__get_job_record(last_row_id, cursor)
         print(f"Record created: {record}")
 
         return Job(id=record[0], group_id=record[1], type=record[2],
-                   description=record[3], status=record[4], created_at=record[5],
+                   description=record[3], status=record[4], error_msg=record[5], created_at=record[6],
                    started_at=None, finished_at=None)
 
+    def __get_job_record(self, id, cursor):
+        get_stm = self.__select_job_stm % id
+
+        print(f"Running statement: {get_stm}")
+        cursor.execute(get_stm)
+        return cursor.fetchone()
+
     def list_jobs(self, group_id) -> List[Job]:
-        None
+        connection = self.__get_db_connection()
+
+        cursor = connection.cursor()
+        cursor.execute(self.__list_jobs_stm)
+        records = cursor.fetchall()
+
+        jobs = [None] * len(records)
+        row_number = 0
+
+        print(f"Jobs returned: {records}")
+        # try to substitute this look with list comprehension
+        for row in records:
+            jobs[row_number] = Job(id=row[0], group_id=row[1], type=row[2], description=row[3], status=row[4],
+                                   error_msg=row[5], created_at=row[6], started_at=row[7], finished_at=row[8])
+            row_number += 1
+
+        cursor.close()
+        print(f"returning jobs: {jobs}")
+        return jobs
 
     def __get_db_connection(self):
         if self.__db_con is None:

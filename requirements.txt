@@ -2,3 +2,4 @@ fastapi[all]
 uvicorn
 prometheus-fastapi-instrumentator
 pyyaml
+sqllite3
