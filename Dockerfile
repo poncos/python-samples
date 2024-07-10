@@ -8,6 +8,7 @@ WORKDIR /home/ecollado
 COPY ./requirements.txt ./requirements.txt
 COPY ./sample_python_rest ./sample_python_rest
 COPY ./config ./config
+COPY ./resources ./resources
 
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
@@ -20,6 +21,6 @@ RUN apt update && \
 
 EXPOSE 8081
 
-#USER ecollado
+USER ecollado
 
 CMD ["/home/ecollado/venv/bin/uvicorn", "sample_python_rest.main:app", "--host", "0.0.0.0", "--port", "8081"]
