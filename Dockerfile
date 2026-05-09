@@ -21,6 +21,6 @@ RUN apt update && \
 
 EXPOSE 8081
 
-USER ecollado
+# USER ecollado
 
 CMD ["/home/ecollado/venv/bin/uvicorn", "sample_python_rest.main:app", "--host", "0.0.0.0", "--port", "8081"]

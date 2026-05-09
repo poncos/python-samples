@@ -10,7 +10,7 @@ from sample_python_rest.datastore.jobs_db import JobsDb
 from sample_python_rest.config.config import ApplicationConfig
 from sample_python_rest.model.job_mapper import JobMapper
 
-app = FastAPI(openapi_prefix="/v1")
+app = FastAPI()
 
 Instrumentator().instrument(app).expose(app, endpoint="/prometheus")
 
