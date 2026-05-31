@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-python-rest
+  labels:
+    name: sample-python-rest
+  namespace: learning
+spec:
+  containers:
+    - name: sample-python-rest
+      image: estebancc/sample-python-rest:v1
+      ports:
+        - containerPort: 8081

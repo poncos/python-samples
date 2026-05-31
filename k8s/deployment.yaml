@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-rest
+  namespace: apps
+  labels:
+    app: sample-python-rest
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-python-rest
+  template:
+    metadata:
+      labels:
+        app: sample-python-rest
+    spec:
+      containers:
+      - name: sample-python-rest
+        image: estebancc/sample-python-rest:v1
+        ports:
+        - containerPort: 8081
