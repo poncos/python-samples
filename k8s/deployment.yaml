@@ -21,3 +21,15 @@ spec:
         image: estebancc/sample-python-rest:v1
         ports:
         - containerPort: 8081
+        livenessProbe:
+          httpGet:
+            path: /sample-python-rest/health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /sample-python-rest/health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10

@@ -1,3 +1,5 @@
+# docker build -t estebancc/sample-python-rest:v1 .
+# docker push estebancc/sample-python-rest:v1
 from python:3.9.19-bookworm
 
 RUN groupadd --system ecollado --gid 444 && \

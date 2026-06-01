@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-python-rest
+  namespace: apps
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /sample-python-rest
+        pathType: Prefix
+        backend:
+          service:
+            name: sample-python-rest
+            port:
+              number: 81
